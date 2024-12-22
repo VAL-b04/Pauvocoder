@@ -1,3 +1,4 @@
+import java.awt.Font;
 
 public class Pauvocoder
 {
@@ -34,11 +35,11 @@ public class Pauvocoder
             taille = (int)(inputWav.length * (raison + 1) + 1);
         }
 
-        System.out.println("###########################");
         System.out.println("resample");
         System.out.println("freqScale = " + freqScale);
         System.out.println("old taille = " + inputWav.length);
         System.out.println("new taille = " + taille);
+        System.out.println("");
 
         outputWav = new double[taille]; // Initialisation du tableau de sortie avec la nouvelle taille
 
@@ -46,7 +47,6 @@ public class Pauvocoder
         {
             outputWav[n++] = inputWav[(int)i];
         }
-        System.out.println("n = " + n);
         return outputWav;
     }
 
@@ -65,13 +65,12 @@ public class Pauvocoder
 
         outputWav = new double[taille];
 
-        System.out.println("###########################");
         System.out.println("vocodeSimple");
         System.out.println("dilatation = " + dilatation);
         System.out.println("saut = " + saut);
-        System.out.println("SEQUENCE = " + SEQUENCE);
         System.out.println("old taille = " + inputWav.length);
         System.out.println("new taille = " + taille);
+        System.out.println("");
 
         for (double i = 0; i < inputWav.length; i += saut) // Parcourt le tableau d'entrée avec un pas défini par saut
         {
@@ -84,7 +83,6 @@ public class Pauvocoder
                 outputWav[n++] = inputWav[(int)(i+j)];
             }
         }
-        System.out.println("n = " + n);
         return outputWav;
     }
 
@@ -141,21 +139,18 @@ public class Pauvocoder
 
         outputWav = new double[taille];
 
-        System.out.println("###########################");
         System.out.println("vocodeSimpleOver");
         System.out.println("dilatation = " + dilatation);
         System.out.println("saut = " + saut);
-        System.out.println("SEQUENCE = " + SEQUENCE);
         System.out.println("seq = " + seq);
-        System.out.println("OVERLAP = " + OVERLAP);
         System.out.println("old taille = " + inputWav.length);
         System.out.println("new taille = " + outputWav.length);
+        System.out.println("");
 
         for (int i = 0; i < inputWav.length; i += saut) // Parcours du tableau d'entrée avec un pas défini par saut
         {
             n = applyOverlapAndCrossfade(inputWav, outputWav, i, seq, n, 0); // Appel à la méthode applyOverlapAndCrossfade pour traiter et copier un segment
         }
-        System.out.println("n = " + n);
         return outputWav;
     }
 
@@ -222,16 +217,13 @@ public class Pauvocoder
         
         outputWav = new double[taille];
 
-        System.out.println("###########################");
         System.out.println("vocodeSimpleOverCross");
         System.out.println("dilatation = " + dilatation);
         System.out.println("saut = " + saut);
-        System.out.println("SEQUENCE = " + SEQUENCE);
         System.out.println("seq = " + seq);
-        System.out.println("OVERLAP = " + OVERLAP);
-        System.out.println("SEEK_WINDOW = " + SEEK_WINDOW);
         System.out.println("old taille = " + inputWav.length);
         System.out.println("new taille = " + outputWav.length);
+        System.out.println("");
 
         int offset = 0;
 
@@ -240,7 +232,6 @@ public class Pauvocoder
             n = applyOverlapAndCrossfade(inputWav, outputWav, i, seq, n, offset); // Applique le recouvrement et le crossfade au segment
             offset = calculOffset(inputWav, i+seq+offset-OVERLAP, i+saut+OVERLAP); // Calcule de l'offset pour aligner le prochain segment
         }
-        System.out.println("n = " + n);
         return outputWav;
     }
 
@@ -250,7 +241,7 @@ public class Pauvocoder
      */
     public static void joue(double[] wav)
     {
-        throw new UnsupportedOperationException("Not implemented yet");
+        StdAudio.play(wav);
     }
 
     /**
@@ -291,101 +282,170 @@ public class Pauvocoder
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    /**
+     * Draw menu
+     */
+    public static void drawMenu()
+    {
+        Font titleFont = new Font("Arial", Font.BOLD, 20);
+        Font buttonFont = new Font("Arial", Font.PLAIN, 14);
 
+        StdDraw.setFont(titleFont);
+        StdDraw.text(50, 95, "Pauvocoder");
 
+        StdDraw.setFont(buttonFont);
 
+        // Bouton Play
+        StdDraw.setPenColor(StdDraw.LIGHT_GRAY);
+        StdDraw.filledRectangle(50, 75, 10, 5);
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.rectangle(50, 75, 10, 5);
+        StdDraw.text(50, 75, "Play");
 
+        // Bouton Arret
+        StdDraw.setPenColor(StdDraw.LIGHT_GRAY);
+        StdDraw.filledRectangle(50, 55, 10, 5);
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.rectangle(50, 55, 10, 5);
+        StdDraw.text(50, 55, "Arrêt");
 
+        StdDraw.setPenColor(StdDraw.LIGHT_GRAY);
+        StdDraw.filledRectangle(10, 10, 10, 5); // Bouton Simple
+        StdDraw.filledRectangle(35, 10, 10, 5); // Bouton Simple Over
+        StdDraw.filledRectangle(60, 10, 10, 5); // Bouton Over Cross
+        StdDraw.filledRectangle(85, 10, 10, 5); // Bouton Echo
 
-    // Fonction pour tracer une forme d'onde audio (signal)
-    public static void plotWaveform(double[] wav, int width, int height, int step) {
-        // Nombre d'échantillons à afficher
-        int n = wav.length;
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.rectangle(10, 10, 10, 5);
+        StdDraw.rectangle(35, 10, 10, 5);
+        StdDraw.rectangle(60, 10, 10, 5);
+        StdDraw.rectangle(85, 10, 10, 5);
 
-        // Calcul du pas (système de coordonnées pour dessiner l'audio)
-        double stepSize = (double) width / n;
-        double scale = height / 2.0; // Pour que l'amplitude soit entre -1 et 1 dans l'affichage
-
-        for (int i = 0; i < n - 1; i++) {
-            double x1 = i * stepSize;
-            double y1 = wav[i] * scale;
-
-            double x2 = (i + 1) * stepSize;
-            double y2 = wav[i + 1] * scale;
-
-            // Tracer la ligne entre les deux points successifs (forme d'onde)
-            StdDraw.line(x1, y1, x2, y2);
-        }
+        StdDraw.text(10, 10, "Simple");
+        StdDraw.text(35, 10, "Simple Over");
+        StdDraw.text(60, 10, "Over Cross");
+        StdDraw.text(85, 10, "Echo");
     }
 
-    public static void displayAudioProcess(double[] inputWav, double[] outputWav) {
-        // Configuration de la fenêtre pour afficher les signaux
-        int width = 800;  // Largeur de la fenêtre d'affichage
-        int height = 400; // Hauteur de la fenêtre d'affichage
-        StdDraw.setCanvasSize(width, height);
-        StdDraw.setXscale(0, width);
-        StdDraw.setYscale(-1.2, 1.2);
-
-        // Affichage de l'audio original
-        StdDraw.setPenColor(StdDraw.RED); // Couleur rouge pour le signal original
-        StdDraw.text(width / 2, 1.1, "Original Audio");
-        plotWaveform(inputWav, width, height, 0);
-
-        // Affichage de l'audio après transformation finale (vocode ou autre)
-        StdDraw.setPenColor(StdDraw.GREEN); // Couleur verte pour l'audio après transformation
-        StdDraw.text(width / 2, 0.5, "Processed Audio");
-        plotWaveform(outputWav, width, height, 2);
-
-        // Attente pour que l'utilisateur puisse voir les résultats
-        StdDraw.show();
+    /**
+     * Know the position
+     * @param x
+     * @param y
+     * @param xMin
+     * @param xMax
+     * @param yMin
+     * @param yMax
+     * @return position
+     */
+    public static boolean isInsideButton(double x, double y, double xMin, double xMax, double yMin, double yMax)
+    {
+        return x >= xMin && x <= xMax && y >= yMin && y <= yMax;
     }
 
-
-
-    public static void main(String[] args) {
-        // Vérification des arguments d'entrée
-        if (args.length < 2) {
+    public static void main(String[] args)
+    {
+        StdDraw.setCanvasSize(800, 600);
+        StdDraw.setXscale(0, 100);
+        StdDraw.setYscale(0, 100);
+        StdDraw.clear(StdDraw.WHITE);
+    
+        if (args.length < 2)
+        {
             System.out.println("Usage: pauvocoder <input.wav> <freqScale>");
             System.exit(1);
         }
 
-        String wavInFile = args[0];   // Fichier d'entrée
-        double freqScale = Double.valueOf(args[1]); // Facteur de changement de fréquence
-        String outPutFile = wavInFile.split("\\.")[0] + "_" + freqScale + "_"; // Génère le nom du fichier de sortie
+        String wavInFile = args[0];
+        double freqScale = Double.valueOf(args[1]);
+        String outPutFile = wavInFile.split("\\.")[0] + "_" + freqScale + "_";
 
-        // Chargement du fichier audio d'entrée
         System.out.println("Ouverture du fichier : " + wavInFile);
         double[] inputWav = StdAudio.read(wavInFile);
 
-        // Redressement du pitch (modification de la fréquence)
-        System.out.println("Rééchantillonnage...");
+        System.out.println("");
+        System.out.println("Rééchantillonnage");
         double[] resampledWav = resample(inputWav, freqScale);
         StdAudio.save(outPutFile + "Resampled.wav", resampledWav);
 
-        // Appliquer une dilatation simple sans chevauchement
-        System.out.println("Application de la dilatation simple...");
+        System.out.println("Application de la dilatation simple");
         double[] outputWav = vocodeSimple(resampledWav, 1.0 / freqScale);
         StdAudio.save(outPutFile + "Simple.wav", outputWav);
 
-        // Appliquer une dilatation simple avec chevauchement
-        System.out.println("Application de la dilatation simple avec chevauchement...");
+        System.out.println("Application de la dilatation simple avec chevauchement");
         outputWav = vocodeSimpleOver(resampledWav, 1.0 / freqScale);
         StdAudio.save(outPutFile + "SimpleOver.wav", outputWav);
 
-        // Appliquer une dilatation simple avec chevauchement et recherche de corrélation croisée maximale
-        System.out.println("Application de la dilatation avec chevauchement et recherche de corrélation croisée...");
+        System.out.println("Application de la dilatation avec chevauchement et recherche de corrélation croisée");
         outputWav = vocodeSimpleOverCross(resampledWav, 1.0 / freqScale);
         StdAudio.save(outPutFile + "SimpleOverCross.wav", outputWav);
 
-        // Jouer le fichier traité
-        //joue(outputWav);
-
-        // Ajouter un écho
-        System.out.println("Ajout d'un écho...");
+        System.out.println("Ajout d'un écho");
         outputWav = echo(outputWav, 100, 0.7);
         StdAudio.save(outPutFile + "SimpleOverCrossEcho.wav", outputWav);
 
-        // Affichage de la forme d'onde (si vous avez implémenté le graphique avec StdDraw)
-        displayAudioProcess(inputWav, outputWav);
+        // Création d'un tableau pour les fichiers générés
+        String[] files =
+        {
+            outPutFile + "Simple.wav",
+            outPutFile + "SimpleOver.wav",
+            outPutFile + "SimpleOverCross.wav",
+            outPutFile + "SimpleOverCrossEcho.wav"
+        };
+
+        drawMenu();
+
+        int selectedFileIndex = -1; // Variable pour suivre le fichier sélectionné
+        double[] wavToPlay = null; // Variable pour stocker l'audio en cours de lecture
+
+        while (true)
+        {
+            if (StdDraw.isMousePressed())
+            {
+                double x = StdDraw.mouseX();
+                double y = StdDraw.mouseY();
+
+            // Bouton Arrêt
+            if (isInsideButton(x, y, 50, 55, 70, 75))
+            {
+                System.out.println("Bouton Arrêt");
+                System.out.println("Arrêt de la lecture");
+            }
+
+            // Bouton Play
+            if (isInsideButton(x, y, 40, 60, 70, 80))
+            {
+                System.out.println("Bouton Play");
+                if (selectedFileIndex >= 0)
+                {
+                    System.out.println("Lecture de: " + files[selectedFileIndex]);
+                    wavToPlay = StdAudio.read(files[selectedFileIndex]);
+                    joue(wavToPlay);
+                }
+            }
+
+                // Gérer les boutons pour sélectionner le fichier à jouer
+                if (isInsideButton(x, y, 10, 30, 5, 15))
+                {
+                    System.out.println("Bouton Simple");
+                    selectedFileIndex = 0;  // Sélectionner Simple.wav
+                }
+                else if (isInsideButton(x, y, 35, 55, 5, 15))
+                {
+                    System.out.println("Bouton Simple Over");
+                    selectedFileIndex = 1;  // Sélectionner SimpleOver.wav
+                }
+                else if (isInsideButton(x, y, 60, 80, 5, 15))
+                {
+                    System.out.println("Bouton Over Cross");
+                    selectedFileIndex = 2;  // Sélectionner SimpleOverCross.wav
+                }
+                else if (isInsideButton(x, y, 85, 105, 5, 15))
+                {
+                    System.out.println("Bouton Echo");
+                    selectedFileIndex = 3;  // Sélectionner SimpleOverCrossEcho.wav
+                }
+            }
+            StdDraw.pause(100);
+        }
     }
 }

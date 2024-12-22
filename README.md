@@ -1,2 +1,2 @@
 # Pauvocoder
-Petit projet en babel
+Petit projet tout court 
